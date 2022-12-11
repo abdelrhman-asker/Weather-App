@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import "./App.css"
 
@@ -7,25 +7,31 @@ function App() {
   const [location, setLocation] = useState('')
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=ff924ae9c4be60cf67951006bf53771c`
-
-  const searchLocation = (event) => {
-    if (event.key === 'Enter') {
-      axios.get(url).then((response) => {
-        setData(response.data)
-        console.log(response.data)
-      })
-      setLocation('')
-    }
+  const DeleteLocation = (event) =>{
+    if(event.key === "Enter"){
+    setLocation("")
+  }
   }
  
+  useEffect (() =>{
+    
+    axios.get(url).then((response) => {
+      setData(response.data)
+      console.table(data)
+      console.log(location)
+
+   })
+  
+  })
+
   return (
     
     <div className="App">
       <div className='InputMain'>
         <input 
         value={location}
-        onChange={event => setLocation(event.target.value)}
-        onKeyPress={searchLocation}
+        onChange={e => {setLocation(e.target.value)}  }
+        onKeyPress={DeleteLocation}
         placeholder='Enter Your City'/>
       </div>
 <div className='MainFlexation'>
