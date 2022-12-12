@@ -6,7 +6,18 @@ function App() {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=ff924ae9c4be60cf67951006bf53771c`
+
+  
+
+  const options = {
+    method: 'GET',
+    url: 'https://weatherapi-com.p.rapidapi.com/current.json',
+    params: {q: location},
+    headers: {
+      'X-RapidAPI-Key': 'fe3469bdc5mshc1376ef3df17411p1623cajsn6da2a938a410',
+      'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+    }
+  };
   const DeleteLocation = (event) =>{
     if(event.key === "Enter"){
     setLocation("")
@@ -15,14 +26,21 @@ function App() {
  
   useEffect (() =>{
     
-    axios.get(url).then((response) => {
-      setData(response.data)
-      console.table(data)
-      console.log(location)
+    axios.request(options).then(function (response) {
+     
+      setData(response)
+      console.log(data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  //   axios.get(url).then((response) => {
+  //     setData(response.data)
+  //     console.table(data)
+  //     console.log(location)
 
-   })
+  //  })
   
-  })
+  },[location])
 
   return (
     
@@ -38,12 +56,18 @@ function App() {
 
       <div className='TopFlexDiv'>
         <div className='TopFlexDivCol'>
-          <h3>{data.name}</h3>
-          {data.main ? <h3 className='DegreeText'>{data.main.temp.toFixed()} °C</h3> : null }
+          {data.data ?
+          <div>
+          <h3>{data.data.location.name} <span style={{fontSize:"smaller"}}>, {data.data.location.country}</span></h3>
+           
+           
+           </div>: null}
+          
+          {data.data ? <h3 className='DegreeText'>{data.data.current.temp_c.toFixed()} °C</h3> : null }
 
           </div>
         <div className='ClearText'>
-        {data.weather ?  <h3>{data.weather[0].main}</h3> : null }
+        {data.data ?  <h3>{data.data.current.condition.text}</h3> : null }
 
          
           </div>
@@ -52,11 +76,11 @@ function App() {
       </div>
 
 {
-  data.name != undefined &&
+  data.data != undefined &&
   <div className='BottomFlexDiv'>
         <div>
           <div>
-          {data.main ?  <h4>{data.main.feels_like} °C</h4> : null }
+          {data.data ?  <h4>{data.data.current.feelslike_c} °C</h4> : null }
 
             </div>
           <div>
@@ -65,7 +89,7 @@ function App() {
         </div>
         <div>
           <div>
-          {data.main ?  <h4>{data.main.humidity} %</h4> : null }
+          {data.data ?  <h4>{data.data.current.humidity} %</h4> : null }
           </div>
           <div>
           <h4>Humidity</h4>
@@ -73,9 +97,16 @@ function App() {
         </div>
         <div>
           <div>
-          {data.wind ?  <h4>{data.wind.speed} MPH</h4> : null }
+          {data.data ?  <h4>{data.data.current.wind_mph} MPH</h4> : null }
           </div>
           <div><h4>Wind Speed</h4>
+          </div>
+        </div>
+        <div>
+          <div>
+          {data.data ?  <h4>{data.data.current.uv} </h4> : null }
+          </div>
+          <div><h4>UV</h4>
           </div>
         </div>
       </div>
